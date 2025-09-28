@@ -1,0 +1,26 @@
+services:
+  mariadb:
+    image: mariadb:11
+    container_name: mariadb_container
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: 12345
+      MARIADB_DATABASE: mydb
+      MARIADB_USER: franquicia
+      MARIADB_PASSWORD: 12345
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+  backend:
+    build: franquicia
+    container_name: franquicia
+    depends_on:
+      - mariadb
+    ports:
+      - "5002:5002"
+
+volumes:
+  mariadb_data:
